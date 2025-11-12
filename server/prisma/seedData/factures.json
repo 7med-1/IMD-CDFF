@@ -1,0 +1,13 @@
+[
+  {
+    "clientName": "John Doe",
+    "nbrPieces": 2,
+    "total": "730"
+  },
+  {
+    "factureref": "FAC-002",
+    "clientName": "Alice Dupont",
+    "nbrPieces": 1,
+    "total": "400"
+  }
+]

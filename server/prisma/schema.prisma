@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId   String @id @default(uuid()) // ✅ auto-generate user ID
+  name     String
+  password String
+}
+
+model Pieces {
+  pieceId     String   @id @default(uuid())
+  name        String
+  reference   String   
+  place       String
+  description String   
+  quantity    Int
+  price       Float?
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  devis       DevisPiece[]
+
+  FacturePiece FacturePiece[]
+}
+
+model Clients {
+  clientId     String     @id @default(uuid())
+  name         String
+  numero       String
+  address       String?
+  nbrFacturs   Int
+  nbrDevis     Int
+  description  String?
+  devis        Devis[]
+  factures     Facture[]  // 🔗 link all invoices
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+model Devis {
+  devisId     String        @id @default(uuid())
+  devisref  String   @unique
+  client      Clients       @relation(fields: [clientId], references: [clientId], onDelete: Cascade)
+  clientId    String
+  pieces      DevisPiece[]  // all pieces linked to this devis
+  nbrPieces   Int
+  total       String
+  createdAt   DateTime      @default(now())
+}
+
+model DevisPiece {
+  id        String   @id @default(uuid())
+  devis     Devis    @relation(fields: [devisId], references: [devisId], onDelete: Cascade)
+  devisId   String
+  piece     Pieces   @relation(fields: [pieceId], references: [pieceId], onDelete: Cascade)
+  pieceId   String
+  quantity  Int
+  subtotal  Float?
+
+  @@unique([devisId, pieceId])
+}
+
+
+model Facture {
+  factureId   String         @id @default(uuid())
+  factureref  String   @unique
+  client      Clients        @relation(fields: [clientId], references: [clientId], onDelete: Cascade)
+  clientId    String
+  pieces      FacturePiece[] // all pieces included in this invoice
+  nbrPieces   Int
+  total       String
+  createdAt   DateTime       @default(now())
+}
+
+model FacturePiece {
+  id        String   @id @default(uuid())
+  facture   Facture  @relation(fields: [factureId], references: [factureId], onDelete: Cascade)
+  factureId String
+  piece     Pieces   @relation(fields: [pieceId], references: [pieceId], onDelete: Cascade)
+  pieceId   String
+  quantity  Int
+  subtotal  Float?
+
+  @@unique([factureId, pieceId])
+}
+
+
+model PiecesSummary {
+  pSummaryId String   @id @default(uuid()) // ✅ added auto-id generation
+  date       DateTime @default(now())      // ✅ default current date
+  quantity   Int
+}

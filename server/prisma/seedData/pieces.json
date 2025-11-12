@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Brake Disc",
+    "reference": "REF-001",
+    "place": "A1-12",
+    "description": "High-performance brake disc for sports cars.",
+    "quantity": 50,
+    "price": 250,
+    "image": "/images/brake_disc.png"
+  },
+  {
+    "name": "Air Filter",
+    "reference": "REF-002",
+    "place": "B3-07",
+    "description": "Premium air filter for high-efficiency engines.",
+    "quantity": 120,
+    "price": 80,
+    "image": "/images/air_filter.png"
+  },
+  {
+    "name": "Oil Pump",
+    "reference": "REF-003",
+    "place": "C2-03",
+    "description": "Durable oil pump designed for long-lasting use.",
+    "quantity": 30,
+    "price": 400,
+    "image": "/images/oil_pump.png"
+  }
+]

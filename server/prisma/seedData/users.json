@@ -1,0 +1,10 @@
+[
+  {
+    "name": "admin",
+    "password": "hashed_password_123"
+  },
+  {
+    "name": "employee1",
+    "password": "hashed_password_456"
+  }
+]

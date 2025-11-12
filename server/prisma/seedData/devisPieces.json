@@ -1,0 +1,17 @@
+[
+  {
+    "pieceRef": "REF-001",
+    "quantity": 1,
+    "subtotal": 250
+  },
+  {
+    "pieceRef": "REF-002",
+    "quantity": 2,
+    "subtotal": 160
+  },
+  {
+    "pieceRef": "REF-003",
+    "quantity": 1,
+    "subtotal": 400
+  }
+]
