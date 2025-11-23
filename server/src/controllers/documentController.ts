@@ -10,9 +10,9 @@ async function fetchDocumentData(ref: string, type: 'facture' | 'devis'): Promis
     const refField = type === 'facture' ? 'factureref' : 'devisref';
     
     try {
-        const documentRecord = await (model as any).findUnique({
+        const documentRecord = await (model as any).findUnique({ 
             where: {
-                [refField]: ref,
+                [refField]: ref, 
             },
             include: {
                 client: true,

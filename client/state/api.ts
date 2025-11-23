@@ -61,9 +61,11 @@ const baseQueryWithLogout = async (args: any, api: any, extraOptions: any) => {
 
 // --- API Slice ---
 export const piecesApi = createApi({
-   reducerPath: 'piecesApi',
+  reducerPath: 'piecesApi',
   baseQuery: baseQueryWithLogout,
   tagTypes: ['Pieces'],
+
+
   endpoints: (build) => ({
     login: build.mutation<
       { message: string; token: string },
@@ -71,11 +73,17 @@ export const piecesApi = createApi({
     >({
       query: (body) => ({ url: '/api/auth/login', method: 'POST', body }),
     }),
-    getPieces: build.query<any, { page?: number; limit?: number }>({
-      query: ({ page = 1, limit = 10 }) => ({
+
+    
+    getPieces: build.query<
+      PaginatedPieces,
+      { page?: number; limit?: number; search?: string }
+    >({
+      query: ({ page = 1, limit = 10, search = '' }) => ({
         url: '/api/pieces',
-        params: { page, limit },
+        params: { page, limit, search },
       }),
+
       providesTags: ['Pieces'],
     }),
 

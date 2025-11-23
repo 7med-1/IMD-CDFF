@@ -32,15 +32,33 @@ export const PieceCard = memo(
         <div className="flex flex-col items-start">
           <div className="relative w-full h-40 mb-3 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
             {piece.image ? (
-              <Image
-                src={piece.image}
-                alt={piece.name}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain rounded-lg"
-                onClick={onClickImage}
-                {...(priority && { priority: true })}
-              />
+              <picture className="relative w-full h-full">
+                {/* Tablet */}
+                <source
+                  media="(max-width: 699px)"
+                  srcSet={piece.image}
+                  type="image/webp"
+                />
+
+                {/* Mobile */}
+                <source
+                  media="(max-width: 640px)"
+                  srcSet={piece.image}
+                  type="image/webp"
+                />
+
+                <Image
+                  src={piece.image}
+                  alt={piece.name}
+                  fill
+                  className="object-contain rounded-lg"
+                  sizes="(max-width: 768px) 100vw,
+             (max-width: 1200px) 50vw,
+             33vw"
+                  onClick={onClickImage}
+                  loading="lazy"
+                />
+              </picture>
             ) : (
               <div className="flex items-center justify-center w-full h-full">
                 <span className="text-gray-400 text-sm">No image</span>
@@ -272,9 +290,9 @@ const Pieces = () => {
         />
       )}
       <ImagePreviewModal
-        isOpen={isPreviewOpen} 
+        isOpen={isPreviewOpen}
         imageUrl={selectedImage}
-        onClose={() => setIsPreviewOpen(false)} 
+        onClose={() => setIsPreviewOpen(false)}
       />
 
       <BackToTopButton />

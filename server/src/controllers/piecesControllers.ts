@@ -33,21 +33,12 @@ export const getPieces = async (req: Request, res: Response): Promise<void> => {
     const limit = parseInt(req.query.limit as string) || 20;
     const skip = (page - 1) * limit;
 
+    // Case-insensitive search on name and reference
     const where: Prisma.PiecesWhereInput = search
       ? {
           OR: [
-            {
-              name: {
-                contains: search,
-                mode: Prisma.QueryMode.insensitive,
-              },
-            },
-            {
-              reference: {
-                contains: search,
-                mode: Prisma.QueryMode.insensitive,
-              },
-            },
+            { name: { contains: search, mode: 'insensitive' } },
+            { reference: { contains: search, mode: 'insensitive' } },
           ],
         }
       : {};
@@ -99,7 +90,10 @@ export const getPieceById = async (req: Request, res: Response) => {
 
 // POST /pieces
 
-export const createPiece = async (req: Request, res: Response): Promise<void> => {
+export const createPiece = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const { name, reference, place, description, quantity, price } = req.body;
     let imageUrl: string | undefined;
@@ -127,18 +121,33 @@ export const createPiece = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-
 // DELETE /pieces/:pieceId
-export const deletePiece = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+export const deletePiece = async (req: Request, res: Response): Promise<void> => {
   try {
     const { pieceId } = req.params;
+
+    // Get the piece first
+    const piece = await prisma.pieces.findUnique({ where: { pieceId } });
+    if (!piece) {
+      res.status(404).json({ message: 'Piece not found' });
+      return;
+    }
+
+    // Delete image from Cloudinary
+    let cloudinaryResult = null;
+    if (piece.image) {
+      cloudinaryResult = await cloudinary.uploader.destroy(piece.image);
+      console.log('Cloudinary delete result:', cloudinaryResult);
+    }
+
+    // Delete the piece from DB
     const deletedPiece = await prisma.pieces.delete({ where: { pieceId } });
-    res
-      .status(200)
-      .json({ message: 'Piece deleted successfully', deletedPiece });
+
+    res.status(200).json({
+      message: 'Piece deleted successfully',
+      deletedPiece,
+      cloudinaryResult, // optional, for debugging
+    });
   } catch (error) {
     console.error('Error deleting piece:', error);
     res.status(500).json({ message: 'Error deleting the piece', error });

@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
+import { compressImage } from '@/utils/imagecompresor';
+
 
 interface CreatePieceModalProps {
   isOpen: boolean;
@@ -56,8 +58,19 @@ const CreatePieceModal = ({
 
       
       if (formData.image instanceof File) {
-        fd.append('image', formData.image);
-      }
+  try {
+    // 1. Compress the image to 500KB
+    const compressedFile = await compressImage(formData.image, 300);
+    
+    // 2. Append the NEW compressed file, not the original
+    fd.append('image', compressedFile);
+    
+  } catch (error) {
+    console.error("Compression failed:", error);
+    // Optional: Fallback to original if compression fails
+    fd.append('image', formData.image);
+  }
+}
 
       
       await onCreate(fd); 
