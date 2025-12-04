@@ -41,6 +41,6 @@
     "nodemon": "^3.1.11",
     "rimraf": "^6.1.2",
     "ts-node": "^10.9.2",
-    "typescripte": "^1.0.0"
+    "typescript": "^5.6.3"
   }
 }
