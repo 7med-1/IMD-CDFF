@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import multer from 'multer';
+import path from 'path';
 
 
 // route imports
@@ -15,7 +16,7 @@ import { verifyToken } from './middleware/authMiddleware';
 
 
 // configs
-dotenv.config();
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 app.use(express.json());
