@@ -13,12 +13,13 @@ import pieceRoutes from './routes/pieceRoutes';
 import documentRoutes from './routes/documentRoutes';
 import loginRoutes from './routes/loginRoutes';
 import { verifyToken } from './middleware/authMiddleware';
+import { uploadToCloudinary } from './config/cloudinary';
 
 
 // configs
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() }); // store files in memory
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
@@ -39,12 +40,17 @@ app.listen(port, () => {
   console.log(`server on port ${port}`);
 });
 
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload', upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
-  // In production, you might store on S3 / Cloudinary and return URL
-  const imageUrl = `/uploads/${req.file.filename}`;
-  res.json({ url: imageUrl });
+  try {
+    // Upload buffer directly to Cloudinary
+    const imageUrl = await uploadToCloudinary(req.file.buffer);
+    res.json({ url: imageUrl });
+  } catch (error) {
+    console.error('❌ Error uploading file:', error);
+    res.status(500).json({ message: 'Upload failed', error });
+  }
 });
 
 
