@@ -1,4 +1,5 @@
 import { Devis, Client, DevisLineItem } from "../types/devis";
+import { v4 as uuidv4 } from "uuid"; //
 
 // Initial state for the nested Client object
 export const initialClientData: Client = {
@@ -16,7 +17,7 @@ export const initialClientData: Client = {
 
 // Initial state for a single line item
 export const initialLineItem: DevisLineItem = {
-  id: crypto.randomUUID(), // Use a unique ID generator for the key
+  id: uuidv4(), // Use a unique ID generator for the key
   devisId: '',
   pieceId: '',
   quantity: 1,
