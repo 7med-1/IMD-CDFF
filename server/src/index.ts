@@ -13,7 +13,6 @@ import pieceRoutes from './routes/pieceRoutes';
 import documentRoutes from './routes/documentRoutes';
 import loginRoutes from './routes/loginRoutes';
 import { verifyToken } from './middleware/authMiddleware';
-import { uploadToCloudinary } from './config/cloudinary';
 
 
 // configs
@@ -38,19 +37,6 @@ app.use('/api', documentRoutes);
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
   console.log(`server on port ${port}`);
-});
-
-app.post('/upload', upload.single('file'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
-
-  try {
-    // Upload buffer directly to Cloudinary
-    const imageUrl = await uploadToCloudinary(req.file.buffer);
-    res.json({ url: imageUrl });
-  } catch (error) {
-    console.error('❌ Error uploading file:', error);
-    res.status(500).json({ message: 'Upload failed', error });
-  }
 });
 
 
