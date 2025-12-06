@@ -4,8 +4,16 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import multer from 'multer';
 import path from 'path';
+
+import { v2 as cloudinary } from 'cloudinary';
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 
 // route imports
@@ -13,12 +21,11 @@ import pieceRoutes from './routes/pieceRoutes';
 import documentRoutes from './routes/documentRoutes';
 import loginRoutes from './routes/loginRoutes';
 import { verifyToken } from './middleware/authMiddleware';
-
+ 
 
 // configs
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
 const app = express();
-const upload = multer({ storage: multer.memoryStorage() }); // store files in memory
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));

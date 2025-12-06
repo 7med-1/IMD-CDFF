@@ -1,29 +1,15 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import multer from 'multer';
-import cloudinary from '../config/cloudinary';
+import cloudinary, { uploadToCloudinary } from '../config/cloudinary';
 import streamifier from 'streamifier';
 import { UploadApiResponse } from 'cloudinary';
 import { Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 const storage = multer.memoryStorage();
-export const upload = multer({ storage, dest: 'uploads/' });
+export const upload = multer({ storage }); 
 
-// Helper to safely upload image to Cloudinary
-export const uploadToCloudinary = (fileBuffer: Buffer): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      { folder: 'pieces' },
-      (error: Error | undefined, result: UploadApiResponse | undefined) => {
-        if (error) return reject(error);
-        if (result?.secure_url) return resolve(result.secure_url);
-        reject(new Error('No secure URL returned from Cloudinary'));
-      }
-    );
-    streamifier.createReadStream(fileBuffer).pipe(uploadStream);
-  });
-};
 
 // GET /pieces?search=
 export const getPieces = async (req: Request, res: Response): Promise<void> => {
