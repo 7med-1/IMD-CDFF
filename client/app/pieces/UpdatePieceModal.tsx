@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Header from '../(components)/Header';
+import { compressImage } from '@/utils/imagecompresor';
 
 export type PieceFormData = {
   name: string;
@@ -53,16 +54,28 @@ const UpdatePieceModal = ({
     e.preventDefault();
 
     try {
+      setLoading(true);
       const fd = new FormData();
-      fd.append('name', formData.name);
+      fd.append('name', formData.name); 
       fd.append('reference', formData.reference);
       fd.append('place', formData.place);
       fd.append('description', formData.description || '');
       fd.append('quantity', formData.quantity?.toString() || '0');
       fd.append('price', formData.price?.toString() || '0');
 
-      if (formData.imageFile) {
-        fd.append('image', formData.imageFile); 
+      if (formData.imageFile instanceof File) {
+        try {
+          // 1. Compress the image to 500KB
+          const compressedFile = await compressImage(formData.imageFile, 300);
+          
+          // 2. Append the NEW compressed file, not the original
+          fd.append('image', compressedFile);
+          
+        } catch (error) {
+          console.error("Compression failed:", error);
+          // Optional: Fallback to original if compression fails
+          fd.append('image', formData.imageFile);
+        }
       }
 
       await onUpdate(fd); 
@@ -168,7 +181,7 @@ const UpdatePieceModal = ({
           <div className="mt-4 flex justify-end gap-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+              className="px-20 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
               disabled={loading}
             >
               {loading ? 'Updating...' : 'Update'}

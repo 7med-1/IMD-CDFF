@@ -1,8 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import streamifier from 'streamifier';
 
-// Configure Cloudinary
-
 
 // Upload buffer to Cloudinary
 export const uploadToCloudinary = (fileBuffer: Buffer): Promise<string> => {

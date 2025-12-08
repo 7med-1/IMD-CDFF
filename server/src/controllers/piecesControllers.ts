@@ -2,8 +2,6 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import multer from 'multer';
 import cloudinary, { uploadToCloudinary } from '../config/cloudinary';
-import streamifier from 'streamifier';
-import { UploadApiResponse } from 'cloudinary';
 import { Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();

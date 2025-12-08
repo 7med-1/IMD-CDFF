@@ -6,9 +6,13 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import path from 'path';
 
-import { v2 as cloudinary } from 'cloudinary';
+
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
+
+import { v2 as cloudinary } from 'cloudinary';
+
 // Configure Cloudinary
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
